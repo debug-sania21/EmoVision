@@ -780,29 +780,65 @@ with col3:
 
         if audio_enabled:
 
-            audio_file = st.file_uploader(
-                "Upload audio:",
-                type=[
-                    "wav",
-                    "mp3",
-                    "flac",
-                    "ogg",
-                    "m4a"
-                ],
-                key="audio_upload"
+            audio_source = st.radio(
+                "Audio input:",
+                ["Upload Audio", "Record Live Audio"],
+                horizontal=True,
+                key="audio_source"
             )
 
-            if audio_file:
+            audio_file = None
 
-                st.html(
-                    f'<div class="file-info">🎧 '
-                    f'{audio_file.name}</div>'
+            # ------------------------------------------------
+            # Upload existing audio file
+            # ------------------------------------------------
+
+            if audio_source == "Upload Audio":
+
+                audio_file = st.file_uploader(
+                    "Upload audio:",
+                    type=[
+                        "wav",
+                        "mp3",
+                        "flac",
+                        "ogg",
+                        "m4a"
+                    ],
+                    key="audio_upload"
                 )
 
-                st.audio(
-                    audio_file,
-                    format="audio/wav"
+                if audio_file:
+
+                    st.html(
+                        f'<div class="file-info">🎧 '
+                        f'{audio_file.name}</div>'
+                    )
+
+                    st.audio(
+                        audio_file
+                    )
+
+            # ------------------------------------------------
+            # Record audio directly from microphone
+            # ------------------------------------------------
+
+            else:
+
+                audio_file = st.audio_input(
+                    "Record your voice:",
+                    key="audio_recorder"
                 )
+
+                if audio_file:
+
+                    st.html(
+                        '<div class="file-info">🎙️ '
+                        'Live audio recorded</div>'
+                    )
+
+                    st.audio(
+                        audio_file
+                    )
 
         else:
 
@@ -814,7 +850,6 @@ with col3:
             )
 
         st.html("</div>")
-
 
 # ============================================================
 # MODEL PREPROCESSING
